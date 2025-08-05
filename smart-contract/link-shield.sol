@@ -27,6 +27,16 @@ contract LinkShield {
         hasAccess[linkId][msg.sender] = true;
     }
 
+    function payLink(string calldata linkId) public payable {
+        Link memory link = links[linkId];
+        require(link.owner != address(0), "Link not found");
+        require(hasAccess[linkId][msg.sender] == false, "You already have access"); 
+        require(msg.value >= link.fee, "Insufficient payment");
+
+        hasAccess[linkId][msg.sender] = true;
+        payable(link.owner).transfer(msg.value - commission); 
+    }
+
     function getLink(string calldata linkId) public view returns (Link memory){
         Link memory link = links[linkId];
         if(link.fee == 0) return link;
