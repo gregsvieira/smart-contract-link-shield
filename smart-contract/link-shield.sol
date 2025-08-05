@@ -27,4 +27,12 @@ contract LinkShield {
         hasAccess[linkId][msg.sender] = true;
     }
 
+    function getLink(string calldata linkId) public view returns (Link memory){
+        Link memory link = links[linkId];
+        if(link.fee == 0) return link;
+        if(hasAccess[linkId][msg.sender] == false)
+            link.url = "";
+
+        return link;
+    }
 }
